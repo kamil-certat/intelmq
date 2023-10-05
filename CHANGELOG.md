@@ -35,8 +35,8 @@ CHANGELOG
 ### Bots
 #### Collectors
 - `intelmq.bots.collectors.stomp.collector` (PR#2408 by Jan Kaliszewski):
-  - Add support for authentication based on STOMP login and passcode,
-    introducing 3 new configuration parameters (see above: *Configuration*).
+  - Add support for authentication based on STOMP login and passcode, introducing three
+    new configuration parameters (see above: *Configuration*).
   - Update the code to support new versions of `stomp.py`, including the latest (`8.1.0`);
     fixes [#2342](https://github.com/certtools/intelmq/issues/2342).
   - Fix the reconnection behavior: do not attempt to reconnect after `shutdown`. Also,
@@ -55,8 +55,8 @@ CHANGELOG
 
 #### Outputs
 - `intelmq.bots.outputs.stomp.output` (PR#2408 by Jan Kaliszewski):
-  - Add support for authentication based on STOMP login and passcode,
-    introducing 3 new configuration parameters (see above: *Configuration*).
+  - Add support for authentication based on STOMP login and passcode, introducing three
+    new configuration parameters (see above: *Configuration*).
   - Update the code to support new versions of `stomp.py`, including the latest (`8.1.0`).
   - Fix `AttributeError` caused by attempts to get unset attributes of `StompOutputBot`
     (`ssl_ca_cert` et consortes).

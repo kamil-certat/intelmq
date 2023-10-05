@@ -1149,20 +1149,20 @@ providers:
       public: false
   CERT.PL:
     N6 Stomp Stream:
-      description: N6 Collector - CERT.pl's N6 Collector - N6 feed via STOMP interface.
-        Note that rate_limit does not apply for this bot as it is waiting for messages
+      description: N6 Collector - CERT.pl's *n6* Stream API feed (via STOMP interface).
+        Note that 'rate_limit' does not apply to this bot, as it is waiting for messages
         on a stream.
-      additional_information: Contact cert.pl to get access to the feed.
+      additional_information: Contact CERT.pl to get access to the feed.
       bots:
         collector:
           module: intelmq.bots.collectors.stomp.collector
           parameters:
-            exchange: "{insert your exchange point as given by CERT.pl}"
+            exchange: "{insert your STOMP *destination* to subscribe to, as given by CERT.pl, e.g. /exchange/my.example.org/*.*.*.*}"
             ssl_ca_certificate: "{insert path to CA file for CERT.pl's n6}"
             auth_by_ssl_client_certificate: false
-            username: "{insert n6 user's login}"
-            password: "{insert n6 user's API key}"
-            port: '61614'
+            username: "{insert your *n6* login, e.g. someuser@my.example.org}"
+            password: "{insert your *n6* API key}"
+            port: 61614
             server: n6stream.cert.pl
             name: __FEED__
             provider: __PROVIDER__
