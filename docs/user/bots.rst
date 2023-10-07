@@ -4344,20 +4344,20 @@ Also, you will need to know an appropriate STOMP *destination* (aka
 
 **Configuration Parameters**
 
-* `exchange`: STOMP *destination* to push at, e.g. "/exchange/_push" (which is default)
-* `heartbeat`: default: 60000
-* `message_hierarchical_output`: Boolean, default: false
-* `message_jsondict_as_string`: Boolean, default: false
-* `message_with_type`: Boolean, default: false
 * `server`: STOMP server's hostname or IP, e.g. "n6stream.cert.pl" or "127.0.0.1" (which is default)
 * `port`: STOMP server's port number (default: 61614)
-* `single_key`: Boolean or string (field name), default: false
+* `exchange`: STOMP *destination* to push at, e.g. "/exchange/_push" (which is default)
+* `heartbeat`: default: 60000
 * `ssl_ca_certificate`: path to CA file
 * `auth_by_ssl_client_certificate`: Boolean, default: true (note: false is needed for new *n6* auth)
 * `ssl_client_certificate`: path to client cert file, used only if `auth_by_ssl_client_certificate` is true
 * `ssl_client_certificate_key`: path to client cert key file, used only if `auth_by_ssl_client_certificate` is true
 * `username`: STOMP *login* (e.g., *n6* user login), used only if `auth_by_ssl_client_certificate` is false
 * `password`: STOMP *passcode* (e.g., *n6* user API key), used only if `auth_by_ssl_client_certificate` is false
+* `message_hierarchical_output`: Boolean, default: false
+* `message_jsondict_as_string`: Boolean, default: false
+* `message_with_type`: Boolean, default: false
+* `single_key`: Boolean or string (field name), default: false
 
 
 .. _intelmq.bots.outputs.tcp.output:

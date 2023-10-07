@@ -31,14 +31,21 @@ class StompMixin:
     port: int
     heartbeat: int
 
+    # Note: the `ssl_ca_certificate` configuration parameter must always
+    # be set to the server's CA certificate(s) file path.
+    ssl_ca_certificate: str
+    # (^ TODO: could also be pathlib.Path)
+
     auth_by_ssl_client_certificate: bool
 
-    username: str  # to be ignored if `auth_by_ssl_client_certificate` is true
-    password: str  # to be ignored if `auth_by_ssl_client_certificate` is true
+    # Used if `auth_by_ssl_client_certificate` is true (otherwise ignored):
+    ssl_client_certificate: str       # (cert file path)
+    ssl_client_certificate_key: str   # (cert's key file path)
+    # (^ TODO: could also be pathlib.Path)
 
-    ssl_ca_certificate: str  # TODO: could be pathlib.Path
-    ssl_client_certificate: str  # TODO: could be pathlib.Path
-    ssl_client_certificate_key: str  # TODO: could be patlib.Path
+    # Used if `auth_by_ssl_client_certificate` is false (otherwise ignored):
+    username: str   # (STOMP auth *login*)
+    password: str   # (STOMP auth *passcode*)
 
     #
     # Helper methods intended to be used in subclasses
@@ -74,6 +81,9 @@ class StompMixin:
           `<STOMP connection>` object.
         """
         ssl_kwargs, connect_kwargs = self.__get_ssl_and_connect_kwargs()
+        # Note: here we coerce `port` to int just to be on the safe
+        # side, as some historical versions of `etc/feeds.yaml` used
+        # to set it to a string.
         host_and_ports = [(self.server, int(self.port))]
         stomp_connection = stomp.Connection(host_and_ports=host_and_ports,
                                             heartbeats=(self.heartbeat,
@@ -154,9 +164,9 @@ class StompMixin:
         raise ValueError(msg)
 
     def __get_ssl_and_connect_kwargs(self) -> Tuple[dict, dict]:
-        # Note: the `ca_certs` argument to `set_ssl()` must always be
-        # provided, otherwise the `stomp.py`'s machinery would *not*
-        # perform any certificate verification!
+        # Note: a *non-empty* and *non-None* `ca_certs` argument must
+        # always be passed to `set_ssl()`; otherwise the `stomp.py`'s
+        # machinery would *not* enable any certificate verification!
         ssl_kwargs = dict(ca_certs=self.ssl_ca_certificate)
         connect_kwargs = dict(wait=True)
         if self.auth_by_ssl_client_certificate:

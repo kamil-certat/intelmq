@@ -1158,12 +1158,12 @@ providers:
           module: intelmq.bots.collectors.stomp.collector
           parameters:
             exchange: "{insert your STOMP *destination* to subscribe to, as given by CERT.pl, e.g. /exchange/my.example.org/*.*.*.*}"
+            server: n6stream.cert.pl
+            port: 61614
             ssl_ca_certificate: "{insert path to CA file for CERT.pl's n6}"
             auth_by_ssl_client_certificate: false
             username: "{insert your *n6* login, e.g. someuser@my.example.org}"
             password: "{insert your *n6* API key}"
-            port: 61614
-            server: n6stream.cert.pl
             name: __FEED__
             provider: __PROVIDER__
         parser:

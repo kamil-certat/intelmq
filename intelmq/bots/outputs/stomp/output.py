@@ -4,34 +4,46 @@
 
 # -*- coding: utf-8 -*-
 
-from intelmq.lib.bot import OutputBot
-from intelmq.lib.mixins import StompMixin
-
 try:
     import stomp
 except ImportError:
     stomp = None
 
+from intelmq.lib.bot import OutputBot
+from intelmq.lib.mixins import StompMixin
+
 
 class StompOutputBot(OutputBot, StompMixin):
     """Send events to a STMOP server"""
     """ main class for the STOMP protocol output bot """
-    exchange: str = "/exchange/_push"
-    heartbeat: int = 60000
+
     http_verify_cert = True
     keep_raw_field: bool = False
     message_hierarchical_output: bool = False
     message_jsondict_as_string: bool = False
     message_with_type: bool = False
-    port: int = 61614
-    server: str = "127.0.0.1"  # TODO: could be ip address
     single_key: bool = False
+
+    server: str = '127.0.0.1'  # TODO: could be ip address
+    port: int = 61614
+    exchange: str = '/exchange/_push'
+    heartbeat: int = 60000
+
+    # Note: the `ssl_ca_certificate` configuration parameter must always
+    # be set to the server's CA certificate(s) file path.
+    ssl_ca_certificate: str = 'ca.pem'
+    # (^ TODO: could also be pathlib.Path)
+
     auth_by_ssl_client_certificate: bool = True
-    username: str = 'guest'  # ignored if `auth_by_ssl_client_certificate` is true
-    password: str = 'guest'  # ignored if `auth_by_ssl_client_certificate` is true
-    ssl_ca_certificate: str = 'ca.pem'  # TODO: could be pathlib.Path
-    ssl_client_certificate: str = 'client.pem'  # TODO: pathlib.Path
-    ssl_client_certificate_key: str = 'client.key'  # TODO: patlib.Path
+
+    # Used if `auth_by_ssl_client_certificate` is true (otherwise ignored):
+    ssl_client_certificate: str = 'client.pem'       # (cert file path)
+    ssl_client_certificate_key: str = 'client.key'   # (cert's key file path)
+    # (^ TODO: could also be pathlib.Path)
+
+    # Used if `auth_by_ssl_client_certificate` is false (otherwise ignored):
+    username: str = 'guest'   # (STOMP auth *login*)
+    password: str = 'guest'   # (STOMP auth *passcode*)
 
     _conn = None
 

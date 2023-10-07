@@ -4,15 +4,18 @@
 
 # -*- coding: utf-8 -*-
 
-from intelmq.lib.bot import CollectorBot
-from intelmq.lib.mixins import StompMixin
-
 try:
     import stomp
     import stomp.exception
 except ImportError:
     stomp = None
-else:
+
+from intelmq.lib.bot import CollectorBot
+from intelmq.lib.mixins import StompMixin
+
+
+if stomp is not None:
+
     class StompListener(stomp.PrintingListener):
         """
         the stomp listener gets called asynchronously for
@@ -74,16 +77,27 @@ def connect_and_subscribe(conn, logger, destination, start=False, connect_kwargs
 class StompCollectorBot(CollectorBot, StompMixin):
     """Collect data from a STOMP Interface"""
     """ main class for the STOMP protocol collector """
-    exchange: str = ''
+
+    server: str = 'n6stream.cert.pl'
     port: int = 61614
-    server: str = "n6stream.cert.pl"
-    auth_by_ssl_client_certificate: bool = True
-    username: str = 'guest'  # ignored if `auth_by_ssl_client_certificate` is true
-    password: str = 'guest'  # ignored if `auth_by_ssl_client_certificate` is true
-    ssl_ca_certificate: str = 'ca.pem'  # TODO pathlib.Path
-    ssl_client_certificate: str = 'client.pem'  # TODO pathlib.Path
-    ssl_client_certificate_key: str = 'client.key'  # TODO pathlib.Path
+    exchange: str = ''
     heartbeat: int = 6000
+
+    # Note: the `ssl_ca_certificate` configuration parameter must always
+    # be set to the server's CA certificate(s) file path.
+    ssl_ca_certificate: str = 'ca.pem'
+    # (^ TODO: could also be pathlib.Path)
+
+    auth_by_ssl_client_certificate: bool = True
+
+    # Used if `auth_by_ssl_client_certificate` is true (otherwise ignored):
+    ssl_client_certificate: str = 'client.pem'       # (cert file path)
+    ssl_client_certificate_key: str = 'client.key'   # (cert's key file path)
+    # (^ TODO: could also be pathlib.Path)
+
+    # Used if `auth_by_ssl_client_certificate` is false (otherwise ignored):
+    username: str = 'guest'   # (STOMP auth *login*)
+    password: str = 'guest'   # (STOMP auth *passcode*)
 
     _collector_empty_process: bool = True
     __conn = False  # define here so shutdown method can check for it
