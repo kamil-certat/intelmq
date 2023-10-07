@@ -83,9 +83,14 @@ class StompCollectorBot(CollectorBot, StompMixin):
     exchange: str = ''
     heartbeat: int = 6000
 
-    # Note: the `ssl_ca_certificate` configuration parameter must always
-    # be set to the server's CA certificate(s) file path.
-    ssl_ca_certificate: str = 'ca.pem'
+    # Note: the `ssl_ca_certificate` configuration parameter must be set:
+    # * *either* to the server's CA certificate(s) file path,
+    # * *or* to an empty string -- dictating that the SSL tools employed
+    #   by the `stomp.py`'s machinery will attempt to load the system’s
+    #   default CA certificates.
+    # The latter, if applicable, is more convenient -- by avoiding the
+    # need to manually update the CA certificate(s) file.
+    ssl_ca_certificate: str = 'ca.pem'  # <- TODO: change to '' (+ remove "ca.pem*" legacy files)
     # (^ TODO: could also be pathlib.Path)
 
     auth_by_ssl_client_certificate: bool = True

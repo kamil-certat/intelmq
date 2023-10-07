@@ -24,14 +24,19 @@ class StompOutputBot(OutputBot, StompMixin):
     message_with_type: bool = False
     single_key: bool = False
 
-    server: str = '127.0.0.1'  # TODO: could be ip address
+    server: str = '127.0.0.1'  # <- TODO: change to 'n6stream.cert.pl' (==StompCollectorBot.server)
     port: int = 61614
     exchange: str = '/exchange/_push'
     heartbeat: int = 60000
 
-    # Note: the `ssl_ca_certificate` configuration parameter must always
-    # be set to the server's CA certificate(s) file path.
-    ssl_ca_certificate: str = 'ca.pem'
+    # Note: the `ssl_ca_certificate` configuration parameter must be set:
+    # * *either* to the server's CA certificate(s) file path,
+    # * *or* to an empty string -- dictating that the SSL tools employed
+    #   by the `stomp.py`'s machinery will attempt to load the system’s
+    #   default CA certificates.
+    # The latter, if applicable, is more convenient -- by avoiding the
+    # need to manually update the CA certificate(s) file.
+    ssl_ca_certificate: str = 'ca.pem'  # <- TODO: change to ''
     # (^ TODO: could also be pathlib.Path)
 
     auth_by_ssl_client_certificate: bool = True

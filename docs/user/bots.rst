@@ -966,7 +966,7 @@ Also, you will need to know an appropriate STOMP *destination* (aka
 * `port`: STOMP server's port number (default: 61614)
 * `exchange`: STOMP *destination* to subscribe to, e.g. "/exchange/my.example.org/*.*.*.*"
 * `heartbeat`: default: 6000
-* `ssl_ca_certificate`: path to CA file
+* `ssl_ca_certificate`: path to CA file, or empty string to load system's default CA certificates
 * `auth_by_ssl_client_certificate`: Boolean, default: true (note: false is needed for new *n6* auth)
 * `ssl_client_certificate`: path to client cert file, used only if `auth_by_ssl_client_certificate` is true
 * `ssl_client_certificate_key`: path to client cert key file, used only if `auth_by_ssl_client_certificate` is true
@@ -4348,7 +4348,7 @@ Also, you will need to know an appropriate STOMP *destination* (aka
 * `port`: STOMP server's port number (default: 61614)
 * `exchange`: STOMP *destination* to push at, e.g. "/exchange/_push" (which is default)
 * `heartbeat`: default: 60000
-* `ssl_ca_certificate`: path to CA file
+* `ssl_ca_certificate`: path to CA file, or empty string to load system's default CA certificates
 * `auth_by_ssl_client_certificate`: Boolean, default: true (note: false is needed for new *n6* auth)
 * `ssl_client_certificate`: path to client cert file, used only if `auth_by_ssl_client_certificate` is true
 * `ssl_client_certificate_key`: path to client cert key file, used only if `auth_by_ssl_client_certificate` is true

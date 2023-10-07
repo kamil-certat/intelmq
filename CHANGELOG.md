@@ -19,6 +19,10 @@ CHANGELOG
     if `auth_by_ssl_client_certificate` is *false*);
   - `password` (STOMP authentication passcode, default: "guest"; to be used only
     if `auth_by_ssl_client_certificate` is *false*).
+- Add the possibility to set the `ssl_ca_certificate` configuration parameter for
+  `intelmq.bots.collectors.stomp.collector` and/or `intelmq.bots.outputs.stomp.output`
+  to an empty string - which means that the SSL machinery used for STOMP communication
+  will attempt to load the system’s default CA certificates (PR#2414 by Jan Kaliszewski).
 
 ### Core
 - `intelmq.lib.message`: For invalid message keys, add a hint on the failure to the exception: not allowed by configuration or not matching regular expression (PR#2398 by Sebastian Wagner).
@@ -40,6 +44,10 @@ CHANGELOG
     fixes [#2342](https://github.com/certtools/intelmq/issues/2342).
   - Add support for authentication based on STOMP login and passcode, introducing three
     new configuration parameters (see above: *Configuration*).
+  - Add support for loading the system’s default CA certificates, as an alternative to
+    specifying the CA certificate(s) file path explicitly (see above: *Configuration*).
+  - Fix (by carefully targeted monkey patching) certain security problems caused by
+    SSL-related weaknesses that some versions of `stomp.py` suffer from.
   - Fix the reconnection behavior: do not attempt to reconnect after `shutdown`. Also,
     never attempt to reconnect if the version of `stomp.py` is older than `4.1.21` (it
     did not work properly anyway).
@@ -60,6 +68,10 @@ CHANGELOG
   - Update the code to support new versions of `stomp.py`, including the latest (`8.1.0`).
   - Add support for authentication based on STOMP login and passcode, introducing three
     new configuration parameters (see above: *Configuration*).
+  - Add support for loading the system’s default CA certificates, as an alternative to
+    specifying the CA certificate(s) file path explicitly (see above: *Configuration*).
+  - Fix (by carefully targeted monkey patching) certain security problems caused by
+    SSL-related weaknesses that some versions of `stomp.py` suffer from.
   - Fix `AttributeError` caused by attempts to get unset attributes of `StompOutputBot`
     (`ssl_ca_cert` et consortes).
   - Add coercion of the `port` config parameter to `int`.
@@ -71,7 +83,7 @@ CHANGELOG
 ### Documentation
 - Add a readthedocs configuration file to fix the build fail (PR#2403 by Sebastian Wagner).
 - Update/fix/improve the stuff related to the STOMP bots and integration with the *n6*'s
-  Stream API (PR#2408 by Jan Kaliszewski).
+  Stream API (PR#2408 and PR#2414 by Jan Kaliszewski).
 
 ### Packaging
 - `debian/control`: in `Suggests` field, replace ``python3-stomp.py (>= 4.1.9)`` with
