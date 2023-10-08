@@ -6,9 +6,10 @@
 
 try:
     import stomp
-    import stomp.exception
 except ImportError:
     stomp = None
+else:
+    import stomp.exception
 
 from intelmq.lib.bot import CollectorBot
 from intelmq.lib.mixins import StompMixin
