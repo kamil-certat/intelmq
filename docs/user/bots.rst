@@ -964,7 +964,7 @@ Also, you will need to know an appropriate STOMP *destination* (aka
 * **Feed parameters** (see above)
 * `server`: STOMP server's hostname or IP, e.g. "n6stream.cert.pl" (which is default)
 * `port`: STOMP server's port number (default: 61614)
-* `exchange`: STOMP *destination* to subscribe to, e.g. "/exchange/my.example.org/*.*.*.*"
+* `exchange`: STOMP *destination* to subscribe to, e.g. ``"/exchange/my.example.org/*.*.*.*"``
 * `heartbeat`: default: 6000
 * `ssl_ca_certificate`: path to CA file, or empty string to load system's default CA certificates
 * `auth_by_ssl_client_certificate`: Boolean, default: true (note: false is needed for new *n6* auth)
@@ -4346,7 +4346,7 @@ Also, you will need to know an appropriate STOMP *destination* (aka
 
 * `server`: STOMP server's hostname or IP, e.g. "n6stream.cert.pl" or "127.0.0.1" (which is default)
 * `port`: STOMP server's port number (default: 61614)
-* `exchange`: STOMP *destination* to push at, e.g. "/exchange/_push" (which is default)
+* `exchange`: STOMP *destination* to push at, e.g. ``"/exchange/_push"`` (which is default)
 * `heartbeat`: default: 60000
 * `ssl_ca_certificate`: path to CA file, or empty string to load system's default CA certificates
 * `auth_by_ssl_client_certificate`: Boolean, default: true (note: false is needed for new *n6* auth)
