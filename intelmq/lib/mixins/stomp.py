@@ -108,8 +108,8 @@ class StompMixin:
         if stomp is None:
             raise MissingDependencyError('stomp',
                                          additional_text=cls._DEPENDENCY_NAME_REMARK)
-        if stomp.__version__ < (4, 1, 8):
-            raise MissingDependencyError('stomp', version="4.1.8",
+        if stomp.__version__ < (4, 1, 12):
+            raise MissingDependencyError('stomp', version="4.1.12",
                                          installed=stomp.__version__,
                                          additional_text=cls._DEPENDENCY_NAME_REMARK)
 
