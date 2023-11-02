@@ -96,7 +96,7 @@ class __Container:
 
 __config = __Container()
 __config.var_state_path = VAR_STATE_PATH
-__config.schema_url = 'https://interchange.shadowserver.org/intelmq/v1/schema'
+__config.schema_url = 'https://raw.githubusercontent.com/The-Shadowserver-Foundation/report_schema/main/intelmq.json'
 __config.schema_file = os.path.join(VAR_STATE_PATH, 'shadowserver-schema.json')
 __config.schema_base = os.path.join(os.path.dirname(__file__), 'schema.json.test')
 __config.schema_active = __config.schema_file
