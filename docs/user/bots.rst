@@ -935,21 +935,39 @@ Stomp
 
 **Requirements**
 
-
 Install the `stomp.py` library from PyPI:
 
 .. code-block:: bash
 
    pip3 install -r intelmq/bots/collectors/stomp/REQUIREMENTS.txt
 
+Alternatively, you may want to install it using your OS's native
+packaging tools, e.g.:
+
+.. code-block:: bash
+
+   apt install python3-stomp
+
+Apart from that, depending on what STOMP server you connect to, you may
+need to obtain, from the organization or company owning the server, one
+or more of the following security/authentication-related resources:
+
+* CA certificate file;
+* either: *client certificate* and *client certificate's key* files,
+  or: *username* (STOMP *login*) and *password* (STOMP *passcode*).
+
+Also, you will need to know an appropriate STOMP *destination* (aka
+*exchange point*), e.g. ``/exchange/my.example.org/*.*.*.*``.
+
 **Configuration Parameters**
 
 * **Feed parameters** (see above)
-* `exchange`: STOMP *destination* to subscribe to, e.g. "/exchange/my.org/*.*.*.*"
-* `port`: 61614
-* `server`: hostname, e.g. "n6stream.cert.pl"
-* `ssl_ca_certificate`: path to CA file
-* `auth_by_ssl_client_certificate`: Boolean, default: true (note: set to false for new *n6* auth)
+* `server`: STOMP server's hostname or IP, e.g. "n6stream.cert.pl" (which is default)
+* `port`: STOMP server's port number (default: 61614)
+* `exchange`: STOMP *destination* to subscribe to, e.g. ``"/exchange/my.example.org/*.*.*.*"``
+* `heartbeat`: default: 6000
+* `ssl_ca_certificate`: path to CA file, or empty string to load system's default CA certificates
+* `auth_by_ssl_client_certificate`: Boolean, default: true (note: false is needed for new *n6* auth)
 * `ssl_client_certificate`: path to client cert file, used only if `auth_by_ssl_client_certificate` is true
 * `ssl_client_certificate_key`: path to client cert key file, used only if `auth_by_ssl_client_certificate` is true
 * `username`: STOMP *login* (e.g., *n6* user login), used only if `auth_by_ssl_client_certificate` is false
@@ -4299,29 +4317,47 @@ STOMP
 * `description`: This collector will push data to any STOMP stream. STOMP stands for Streaming Text Oriented Messaging Protocol. See: https://en.wikipedia.org/wiki/Streaming_Text_Oriented_Messaging_Protocol
 
 **Requirements**
-:
 
-Install the stomp.py library, e.g. `apt install python3-stomp.py` or `pip install stomp.py`.
+Install the `stomp.py` library from PyPI:
 
-You need a CA certificate, client certificate and key file from the organization / server you are connecting to.
-Also you will need a so called "exchange point".
+.. code-block:: bash
+
+   pip3 install -r intelmq/bots/outputs/stomp/REQUIREMENTS.txt
+
+Alternatively, you may want to install it using your OS's native
+packaging tools, e.g.:
+
+.. code-block:: bash
+
+   apt install python3-stomp
+
+Apart from that, depending on what STOMP server you connect to, you may
+need to obtain, from the organization or company owning the server, one
+or more of the following security/authentication-related resources:
+
+* CA certificate file;
+* either: *client certificate* and *client certificate's key* files,
+  or: *username* (STOMP *login*) and *password* (STOMP *passcode*).
+
+Also, you will need to know an appropriate STOMP *destination* (aka
+*exchange point*), e.g. ``/exchange/_push``.
 
 **Configuration Parameters**
 
-* `exchange`: STOMP *destination* to push at, e.g. "/exchange/_push"
+* `server`: STOMP server's hostname or IP, e.g. "n6stream.cert.pl" or "127.0.0.1" (which is default)
+* `port`: STOMP server's port number (default: 61614)
+* `exchange`: STOMP *destination* to push at, e.g. ``"/exchange/_push"`` (which is default)
 * `heartbeat`: default: 60000
-* `message_hierarchical_output`: Boolean, default: false
-* `message_jsondict_as_string`: Boolean, default: false
-* `message_with_type`: Boolean, default: false
-* `port`: Integer, default: 61614
-* `server`: Host or IP address of the STOMP server
-* `single_key`: Boolean or string (field name), default: false
-* `ssl_ca_certificate`: path to CA file
-* `auth_by_ssl_client_certificate`: Boolean, default: true (note: set to false for new *n6* auth)
+* `ssl_ca_certificate`: path to CA file, or empty string to load system's default CA certificates
+* `auth_by_ssl_client_certificate`: Boolean, default: true (note: false is needed for new *n6* auth)
 * `ssl_client_certificate`: path to client cert file, used only if `auth_by_ssl_client_certificate` is true
 * `ssl_client_certificate_key`: path to client cert key file, used only if `auth_by_ssl_client_certificate` is true
 * `username`: STOMP *login* (e.g., *n6* user login), used only if `auth_by_ssl_client_certificate` is false
 * `password`: STOMP *passcode* (e.g., *n6* user API key), used only if `auth_by_ssl_client_certificate` is false
+* `message_hierarchical_output`: Boolean, default: false
+* `message_jsondict_as_string`: Boolean, default: false
+* `message_with_type`: Boolean, default: false
+* `single_key`: Boolean or string (field name), default: false
 
 
 .. _intelmq.bots.outputs.tcp.output:
