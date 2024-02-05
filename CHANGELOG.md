@@ -32,6 +32,9 @@
   which provides certain common STOMP-bot-specific operations, factored out from
   `intelmq.bots.collectors.stomp.collector` and `intelmq.bots.outputs.stomp.output`
   (PR#2408 and PR#2414 by Jan Kaliszewski).
+- `intelmq.lib.upgrades`: Replace deprecated instances of `url2fqdn` experts by the new `url` expert in runtime configuration (PR#2432 by Sebastian Wagner).
+- `intelmq.lib.bot`: Ensure closing log files on reloading (PR#2435 by Kamil Mankowski).
+- Only load the config once when starting intelmqctl (which makes IntelMQ API calls take less time) (PR#2444 by DigitalTrustCenter).
 
 ### Development
 - Makefile: Add codespell and test commands (PR#2425 by Sebastian Wagner).
@@ -59,8 +62,16 @@
   - Remove undocumented and unused attributes of `StompCollectorBot` instances:
     `ssl_ca_cert`, `ssl_cl_cert`, `ssl_cl_cert_key`.
   - Minor fixes/improvements and some refactoring (see also above: *Core*...).
+- `intelmq.bots.collectors.shadowserver.collector_reports_api`:
+  - The 'json' option is no longer supported as the 'csv' option provides better performance (PR#2372 by elsif2).
 
 #### Parsers
+- `intelmq.bots.parsers.netlab_360.parser`: Removed as the feed is discontinued. (#2442 by Filip Pokorný)
+- `intelmq.bots.parsers.webinspektor.parser`: Removed as the feed is discontinued. (#2442 by Filip Pokorný)
+- `intelmq.bots.parsers.sucuri.parser`: Removed as the feed is discontinued. (#2442 by Filip Pokorný)
+- `intelmq.bots.parsers.shadowserver._config`:
+  - Switch to dynamic configuration to decouple report schema changes from IntelMQ releases by regularly downloading them from the Shadowserver server (PR#2372 by elsif2).
+- `intelmq.bots.parsers.cymru`: Save current line. (PR by Kamil Mankowski)
 
 #### Experts
 - `intelmq.bots.experts.jinja` (PR#2417 by Mikk Margus Möll):
@@ -86,6 +97,8 @@
   - Minor fixes/improvements and some refactoring (see also above: *Core*...).
 - `intelmq.bots.outputs.stomp.output` (PR#2423 by Kamil Mankowski):
   - Try to reconnect on `NotConnectedException`.
+- `intelmq.bots.outputs.smtp_batch.output` (PR #2439 by Edvard Rejthar):
+  - Fix ability to send with the default `bcc`
 
 ### Documentation
 - Add a readthedocs configuration file to fix the build fail (PR#2403 by Sebastian Wagner).
@@ -93,6 +106,8 @@
 - Update/fix/improve the stuff related to the STOMP bots and integration with the *n6*'s
   Stream API (PR#2408 and PR#2414 by Jan Kaliszewski).
 - Complete documentation overhaul. Change to markdown format. Uses the mkdocs-material (PR#2419 by Filip Pokorný).
+- Adds warning banner if not browsing the latest version of the docs (PR#2445 by Filip Pokorný).
+- Fix logo path in index.md when building the docs (PR#2445 by Filip Pokorný).
 
 ### Packaging
 - Add `pendulum` to suggested packages, as it is required for the sieve bot (PR#2424 by Sebastian Wagner).
@@ -103,7 +118,9 @@
 ### Tests
 
 ### Tools
- - `intelmq_psql_initdb` got support for providing custom harmonization file, generating view for storing `raw` fields separately, and adding `IF NOT EXISTS`/`OR REPLACE` clauses ([PR#2404](https://github.com/certtools/intelmq/pull/2404) by Kamil Mankowski).
+ - `intelmq_psql_initdb`:
+   -  got support for providing custom harmonization file, generating view for storing `raw` fields separately, and adding `IF NOT EXISTS`/`OR REPLACE` clauses ([PR#2404](https://github.com/certtools/intelmq/pull/2404) by Kamil Mankowski).
+   -  got support for generating JSONB fields for PostgreSQL schema (PR#2436 by Kamil Mankowski).
 
 ### Contrib
 
@@ -150,13 +167,10 @@
   - added support for `Subject NOT LIKE` queries,
   - added support for multiple values in ticket subject queries.
 - `intelmq.bots.collectors.rsync`: Support for optional private key, relative time parsing for the source path, extra rsync parameters and strict host key checking (PR#2241 by Mateo Durante).
-- `intelmq.bots.collectors.shadowserver.collector_reports_api`:
-  - The 'json' option is no longer supported as the 'csv' option provides better performance.
 
 #### Parsers
 - `intelmq.bots.parsers.shadowserver._config`:
   - Reset detected `feedname` at shutdown to re-detect the feedname on reloads (PR#2361 by @elsif2, fixes #2360).
-  - Switch to dynamic configuration to decouple report schema changes from IntelMQ releases. 
   - Added 'IPv6-Vulnerable-Exchange' alias and 'Accessible-WS-Discovery-Service' report. (PR#2338)
   - Removed unused `p0f_genre` and `p0f_detail` from the 'DNS-Open-Resolvers' report. (PR#2338)
   - Added 'Accessible-SIP' report. (PR#2348)
