@@ -12,6 +12,7 @@
 ### Configuration
 
 ### Core
+- Fix maintaining pipeline connection when using AMQP (PR# by Kamil Mankowski).
 
 ### Development
 
