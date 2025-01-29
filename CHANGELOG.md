@@ -34,6 +34,9 @@
 - `intelmq.bots.experts.securitytxt`:
   - Added new bot (PR#2538 by Frank Westers and Sebastian Wagner)
 - `intelmq.bots.experts.misp`: Use `PyMISP` class instead of deprecated `ExpandedPyMISP` (PR#2532 by Radek Vyhnal)
+- `intelmq.bots.experts.tuency`: (PR# by Kamil Mańkowski)
+  - Support for querying using `feed.code` and `classification.identifier` (requires Tuency 2.6+),
+  - Support for customizing fields and the TTL value for suspended sending.
 
 #### Outputs
 - `intelmq.bots.outputs.cif3.output`:

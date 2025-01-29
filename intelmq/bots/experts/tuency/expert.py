@@ -1,6 +1,6 @@
 """
-© 2021 Sebastian Wagner <wagner@cert.at>
-
+SPDX-FileCopyrightText: 2021 Sebastian Wagner <wagner@cert.at>
+SPDX-FileCopyrightText: 2025 CERT.at GmbH <https://cert.at/>
 SPDX-License-Identifier: AGPL-3.0-or-later
 
 https://gitlab.com/intevation/tuency/tuency/-/blob/master/backend/docs/IntelMQ-API.md
@@ -26,6 +26,17 @@ class TuencyExpertBot(ExpertBot):
     authentication_token: str
     overwrite: bool = True
 
+    notify_field = "extra.notify"
+    ttl_field = "extra.ttl"
+    constituency_field = "extra.constituency"
+
+    # Allows setting custom TTL for suspended sending
+    ttl_on_suspended = None
+
+    # Non-default values require Tuency v2.6+
+    query_classification_identifier = False
+    query_feed_code = False
+
     def init(self):
         self.set_request_parameters()
         self.session = create_request_session(self)
@@ -44,11 +55,17 @@ class TuencyExpertBot(ExpertBot):
                 "classification_taxonomy": event["classification.taxonomy"],
                 "classification_type": event["classification.type"],
                 "feed_provider": event["feed.provider"],
-                "feed_name": event["feed.name"],
                 "feed_status": "production",
             }
+            if self.query_feed_code:
+                params["feed_code"] = event["feed.code"]
+            else:
+                params["feed_name"] = event["feed.name"]
+
+            if self.query_classification_identifier:
+                params["classification_identifier"] = event["classification.identifier"]
         except KeyError as exc:
-            self.logger.debug('Skipping event because of missing field: %s.', exc)
+            self.logger.debug("Skipping event because of missing field: %s.", exc)
             self.send_message(event)
             self.acknowledge_message()
             return
@@ -62,24 +79,42 @@ class TuencyExpertBot(ExpertBot):
             pass
 
         response = self.session.get(self.url, params=params).json()
-        self.logger.debug('Received response %r.', response)
+        self.logger.debug("Received response %r.", response)
 
         if response.get("suppress", False):
-            event["extra.notify"] = False
+            event.add(self.notify_field, False)
+            if self.ttl_on_suspended:
+                event.add(self.ttl_field, self.ttl_on_suspended)
         else:
-            if 'interval' not in response:
+            if "interval" not in response:
                 # empty response
                 self.send_message(event)
                 self.acknowledge_message()
                 return
-            elif response['interval']['unit'] == 'immediate':
-                event["extra.ttl"] = 0
+            elif response["interval"]["unit"] == "immediate":
+                event.add(self.ttl_field, 0)
             else:
-                event["extra.ttl"] = parse_relative(f"{response['interval']['length']} {response['interval']['unit']}") * 60
+                event.add(
+                    self.ttl_field,
+                    (
+                        parse_relative(
+                            f"{response['interval']['length']} {response['interval']['unit']}"
+                        )
+                        * 60
+                    ),
+                )
         contacts = []
-        for destination in response.get('ip', {'destinations': []})['destinations'] + response.get('domain', {'destinations': []})['destinations']:
-            contacts.extend(contact['email'] for contact in destination["contacts"])
-        event.add('source.abuse_contact', ','.join(contacts), overwrite=self.overwrite)
+        for destination in (
+            response.get("ip", {"destinations": []})["destinations"]
+            + response.get("domain", {"destinations": []})["destinations"]
+        ):
+            contacts.extend(contact["email"] for contact in destination["contacts"])
+        event.add("source.abuse_contact", ",".join(contacts), overwrite=self.overwrite)
+
+        if self.constituency_field and (
+            constituencies := response.get("constituencies", [])
+        ):
+            event.add(self.constituency_field, ",".join(constituencies))
 
         self.send_message(event)
         self.acknowledge_message()
