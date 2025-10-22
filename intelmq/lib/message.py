@@ -49,8 +49,9 @@ class MessageFactory:
             MessageFactory.unserialize
             MessageFactory.serialize
         """
-        if not default_type and '__type' not in message:
-            raise ValueError("Message type could not be determined. Input message misses '__type' and parameter 'default_type' not given.")
+
+        if default_type and "__type" not in message:
+            message["__type"] = default_type
         try:
             class_reference = getattr(intelmq.lib.message, message.get("__type", default_type))
         except AttributeError:
