@@ -88,6 +88,7 @@ class MISPFeedOutputBot(OutputBot, CacheMixin):
 
         self.current_events = {}
         self.current_files = {}
+        self._dirty_events = set()
 
         self.misp_org = MISPOrganisation()
         self.misp_org.name = self.misp_org_name
@@ -200,7 +201,7 @@ class MISPFeedOutputBot(OutputBot, CacheMixin):
             tags.extend(self._tagging_objects[key])
         self.current_events[key].tags = tags
 
-        info = "IntelMQ event {begin} - {end}" "".format(
+        info = "IntelMQ event {begin} - {end}".format(
             begin=self.min_time_current.isoformat(),
             end=self.max_time_current.isoformat(),
         )
@@ -219,6 +220,8 @@ class MISPFeedOutputBot(OutputBot, CacheMixin):
                 f.write(str(self.current_files[key]))
             else:
                 json.dump({k: str(v) for k, v in self.current_files.items()}, f)
+
+        self._dirty_events.add(key)
         return self.current_events[key]
 
     def _add_message_to_misp_event(self, message: dict):
@@ -235,6 +238,8 @@ class MISPFeedOutputBot(OutputBot, CacheMixin):
             event = self.current_events[key]
         else:
             event = self._generate_new_misp_event(key)
+
+        self._dirty_events.add(key)
 
         obj = event.add_object(name="intelmq_event")
         # For caching and default mapping, the serialized version is the right format to work on.
@@ -263,8 +268,8 @@ class MISPFeedOutputBot(OutputBot, CacheMixin):
         for parameter, value in definition.items():
             # Check if the value is a harmonization key or a static value
             if isinstance(value, str) and (
-                value in self.harmonization["event"] or
-                value.split(".", 1)[0] in self.harmonization["event"]
+                value in self.harmonization["event"]
+                or value.split(".", 1)[0] in self.harmonization["event"]
             ):
                 result[parameter] = message.get(value)
             else:
@@ -292,11 +297,15 @@ class MISPFeedOutputBot(OutputBot, CacheMixin):
             message = self.cache_pop()
 
         for key, event in self.current_events.items():
+            # Feed generation can be very resource-consuming process
+            if key not in self._dirty_events:
+                continue
             feed_output = event.to_feed(with_meta=False)
             with self.current_files[key].open("w") as f:
                 json.dump(feed_output, f)
 
         feed_meta_generator(self.output_dir)
+        self._dirty_events.clear()
 
     @staticmethod
     def check(parameters):
@@ -333,8 +342,8 @@ class MISPFeedOutputBot(OutputBot, CacheMixin):
         sanity_event = Event({})
         event_separator = parameters.get("event_separator")
         if (
-            event_separator and not
-            sanity_event._Message__is_valid_key(event_separator)[0]
+            event_separator
+            and not sanity_event._Message__is_valid_key(event_separator)[0]
         ):
             results.append(
                 [
@@ -399,8 +408,8 @@ class MISPFeedOutputBot(OutputBot, CacheMixin):
                         "error",
                         (
                             "Parameter 'tagging' has to be a dictionary with keys as '__all__' "
-                            "or possible 'event_separator' values. Each dictionary value " +
-                            tagging_error,
+                            "or possible 'event_separator' values. Each dictionary value "
+                            + tagging_error,
                         ),
                     ]
                 )
