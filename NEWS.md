@@ -27,6 +27,8 @@ ALTER TABLE events ADD "product.name" text;
 ALTER TABLE events ADD "product.vendor" text;
 ALTER TABLE events ADD "product.version" text;
 ALTER TABLE events ADD "product.vulnerabilities" text;
+ALTER TABLE events ADD severity varchar(10);
+ALTER TABLE events ADD "constituency" text;
 ```
 
 ### Configuration
